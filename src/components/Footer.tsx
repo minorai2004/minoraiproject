@@ -1,12 +1,31 @@
+import { useNavigate, useLocation } from "react-router-dom";
 import logo from "@/assets/logo-minor-ai.png";
 
 const links = [
-  { label: "Inicio", href: "#inicio" },
-  { label: "Servicios", href: "#servicios" },
-  { label: "Más sobre MINOR.AI", href: "#about" },
+  { label: "Inicio", href: "/" },
+  { label: "Servicios", href: "/servicios" },
+  { label: "Más sobre MINOR.AI", href: "/#about" },
 ];
 
 const Footer = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleClick = (href: string) => {
+    if (href.startsWith("/#")) {
+      const hash = href.substring(1);
+      if (location.pathname === "/") {
+        document.querySelector(hash)?.scrollIntoView({ behavior: "smooth" });
+      } else {
+        navigate("/");
+        setTimeout(() => document.querySelector(hash)?.scrollIntoView({ behavior: "smooth" }), 100);
+      }
+    } else {
+      navigate(href);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
   return (
     <footer className="border-t border-border py-16">
       <div className="container">
@@ -19,13 +38,13 @@ const Footer = () => {
           </div>
           <div className="flex gap-8">
             {links.map((link) => (
-              <a
+              <button
                 key={link.href}
-                href={link.href}
+                onClick={() => handleClick(link.href)}
                 className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
               >
                 {link.label}
-              </a>
+              </button>
             ))}
           </div>
         </div>
