@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const HeroVisual = () => (
   <div className="relative w-full h-full min-h-[300px] flex items-center justify-center">
@@ -33,6 +34,7 @@ const HeroVisual = () => (
 );
 
 const Hero = () => {
+  const navigate = useNavigate();
   return (
     <section id="inicio" className="relative min-h-screen flex items-center overflow-hidden">
       {/* Grid background */}
@@ -62,13 +64,13 @@ const Hero = () => {
               Creamos sistemas inteligentes, soluciones de IA generativa y experiencias digitales modernas para empresas que buscan evolucionar.
             </p>
             <div className="flex flex-wrap gap-4">
-              <a
-                href="#servicios"
+              <button
+                onClick={() => navigate("/servicios")}
                 className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity duration-200"
               >
                 Ver servicios
                 <ArrowRight size={16} />
-              </a>
+              </button>
               <a
                 href="#about"
                 className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full border border-border text-sm font-medium text-foreground hover:bg-secondary transition-colors duration-200"

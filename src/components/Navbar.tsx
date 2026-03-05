@@ -1,23 +1,42 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
 import logo from "@/assets/logo-minor-ai.png";
 
 const navItems = [
-  { label: "Inicio", href: "#inicio" },
-  { label: "Servicios", href: "#servicios" },
-  { label: "Más sobre MINOR.AI", href: "#about" },
+  { label: "Inicio", href: "/" },
+  { label: "Servicios", href: "/servicios" },
+  { label: "Más sobre MINOR.AI", href: "/#about" },
 ];
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  const handleNavClick = (href: string) => {
+    setMobileOpen(false);
+    if (href.startsWith("/#")) {
+      const hash = href.substring(1);
+      if (location.pathname === "/") {
+        document.querySelector(hash)?.scrollIntoView({ behavior: "smooth" });
+      } else {
+        navigate("/");
+        setTimeout(() => document.querySelector(hash)?.scrollIntoView({ behavior: "smooth" }), 100);
+      }
+    } else {
+      navigate(href);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
 
   return (
     <motion.nav
@@ -26,25 +45,25 @@ const Navbar = () => {
       }`}
     >
       <div className="container flex items-center justify-between">
-        <a href="#inicio" className="flex items-center gap-2">
+        <button onClick={() => handleNavClick("/")} className="flex items-center gap-2">
           <img
             src={logo}
             alt="MINOR.AI"
-            className={`transition-all duration-300 ${scrolled ? "h-8" : "h-10"}`}
+            className={`transition-all duration-300 ${scrolled ? "h-11 md:h-12" : "h-13 md:h-14"}`}
           />
-        </a>
+        </button>
 
         {/* Desktop */}
         <div className="hidden md:flex items-center gap-8">
           {navItems.map((item) => (
-            <a
+            <button
               key={item.href}
-              href={item.href}
+              onClick={() => handleNavClick(item.href)}
               className="relative text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 group"
             >
               {item.label}
               <span className="absolute -bottom-1 left-0 w-0 h-px bg-foreground transition-all duration-300 group-hover:w-full" />
-            </a>
+            </button>
           ))}
         </div>
 
@@ -69,14 +88,13 @@ const Navbar = () => {
           >
             <div className="container py-4 flex flex-col gap-4">
               {navItems.map((item) => (
-                <a
+                <button
                   key={item.href}
-                  href={item.href}
-                  onClick={() => setMobileOpen(false)}
-                  className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                  onClick={() => handleNavClick(item.href)}
+                  className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors text-left"
                 >
                   {item.label}
-                </a>
+                </button>
               ))}
             </div>
           </motion.div>
